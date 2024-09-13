@@ -1,5 +1,10 @@
 package Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
+import Service.AccountService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -9,6 +14,12 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    AccountService accountService;
+    public SocialMediaController() {
+        accountService = new AccountService();
+    }
+    
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -29,8 +40,17 @@ public class SocialMediaController {
         return app;
     }
 
-    private void registerUserHandler(Context ctx) {
-        ctx.json("Registering User");
+    private void registerUserHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(ctx.body(), Account.class);
+        Account addedAccount = accountService.registerAccount(account);
+        if (addedAccount == null) {
+            ctx.status(400);
+            ctx.json("No account added");
+        } else {
+            ctx.status(200);
+            ctx.json(om.writeValueAsString(addedAccount));
+        }
     }
 
     private void loginUserHandler(Context ctx) {
