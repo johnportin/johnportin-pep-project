@@ -17,9 +17,55 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
+        app.post("register", this::registerUserHandler);
+        app.post("login", this::loginUserHandler);
+        app.post("messages", this::postMessageHandler);
+        app.get("messages", this::getAllMessagesHandler);
+        app.get("messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("messages/{message_id}", this::delteMessageByIdHandler);
+        app.patch("messages/{message_id}", this::updateMessageByIdHandler);
+        app.get("accounts/{account_id}/messages", this::getAllMessagesForUserByIdHandler);
 
         return app;
     }
+
+    private void registerUserHandler(Context ctx) {
+        ctx.json("Registering User");
+    }
+
+    private void loginUserHandler(Context ctx) {
+        ctx.json("Logging in user");
+    }
+
+    private void postMessageHandler(Context ctx) {
+        ctx.json("Posting message");
+    }
+
+    private void getAllMessagesHandler(Context ctx) {
+        ctx.json("Retrieving all messages");
+    }
+
+    private void getMessageByIdHandler(Context ctx) {
+        String id = ctx.pathParam("message_id");
+        ctx.json("Retrieving message for id=" + id);
+    }
+
+    private void delteMessageByIdHandler(Context ctx) {
+        String id = ctx.pathParam("message_id");
+        ctx.json("Deleting message for id=" + id);
+    }
+
+    private void updateMessageByIdHandler(Context ctx) {
+        String id = ctx.pathParam("message_id");
+        ctx.json("Updating message for id=" + id);
+    }
+
+    private void getAllMessagesForUserByIdHandler(Context ctx) {
+        String id = ctx.pathParam("account_id");
+        ctx.json("Retrieving all messages for account_id=" + id);
+    }
+
+
 
     /**
      * This is an example handler for an example endpoint.
