@@ -46,7 +46,6 @@ public class SocialMediaController {
         Account addedAccount = accountService.registerAccount(account);
         if (addedAccount == null) {
             ctx.status(400);
-            ctx.json("No account added");
         } else {
             ctx.status(200);
             ctx.json(om.writeValueAsString(addedAccount));

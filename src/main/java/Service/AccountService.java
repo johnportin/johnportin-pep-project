@@ -15,8 +15,8 @@ public class AccountService {
     }
 
     public Account registerAccount(Account account) {
-        Account a = accountDAO.getAccountByUsername(account);
-        if (a == null | account.getPassword().length() < 4 | account.getUsername().equals("")) {
+        Account a = accountDAO.getAccountByUsername(account.getUsername());
+        if (a != null | account.getPassword().length() < 4 | account.getUsername().equals("")) {
             return null;
         }
         return accountDAO.registerAccount(account);

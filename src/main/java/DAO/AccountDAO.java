@@ -9,15 +9,17 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "INSERT INTO account (username, password) VALUES (?, ?)";
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, account.getUsername());
             ps.setString(2, account.getPassword());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            ps.executeUpdate();
+            ResultSet pkrs = ps.getGeneratedKeys();
+            while (pkrs.next()) {
+                int id = (int) pkrs.getLong(1);
                 Account returnedAccount = new Account(
-                    rs.getInt("account_id"), 
-                    rs.getString("username"), 
-                    rs.getString("password"));
+                    id, 
+                    account.getUsername(), 
+                    account.getPassword());
                 return returnedAccount;
             }
         } catch (SQLException e) {
@@ -26,14 +28,15 @@ public class AccountDAO {
         return null;
     }
 
-    public Account getAccountByUsername(Account account) {
+    public Account getAccountByUsername(String username) {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "SELECT * FROM account WHERE username = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, account.getUsername());
+            ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                System.out.println("Made it into rs");
                 Account returnedAccount = new Account(
                     rs.getInt("account_id"), 
                     rs.getString("username"), 
