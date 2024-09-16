@@ -103,20 +103,39 @@ public class SocialMediaController {
         }
     }
 
-    private void delteMessageByIdHandler(Context ctx) {
+    private void delteMessageByIdHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
         int id = Integer.valueOf(ctx.pathParam("message_id"));
         Message message = messageService.deleteMessageByID(id);
         ctx.status(200);
         if (message == null) {
             ctx.json("");
         } else {
-            ctx.json(message.getMessage_text());
+            ctx.json(om.writeValueAsString(message));
         }
     }
 
-    private void updateMessageByIdHandler(Context ctx) {
-        String id = ctx.pathParam("message_id");
-        ctx.json("Updating message for id=" + id);
+    private void updateMessageByIdHandler(Context ctx) throws JsonProcessingException {
+        int id = Integer.valueOf(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageByID(id);
+
+        if (message == null) {
+            ctx.status(400);
+            ctx.json("");
+        } else {
+            
+            ObjectMapper om = new ObjectMapper();
+            Message newMessage = om.readValue(ctx.body(), Message.class);
+            Message updatedMessage = messageService.updateMessage(id, newMessage);
+            if (updatedMessage != null) {
+                ctx.status(200);
+                ctx.json(om.writeValueAsString(updatedMessage));    
+            } else {
+                ctx.status(400);
+                ctx.json("");
+            }
+        }
+        
     }
 
     private void getAllMessagesForUserByIdHandler(Context ctx) {
