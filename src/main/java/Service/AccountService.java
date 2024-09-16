@@ -2,6 +2,7 @@ package Service;
 
 import DAO.AccountDAO;
 import Model.Account;
+import Model.Message;
 
 public class AccountService {
     AccountDAO accountDAO;
@@ -21,4 +22,13 @@ public class AccountService {
         }
         return accountDAO.registerAccount(account);
     }
+
+    public Account loginAccount(Account account) {
+        String username = account.getUsername();
+        String password = account.getPassword();
+        Account a = accountDAO.authenticanAccount(username, password);
+        return a;
+    }
+
+    
 }
