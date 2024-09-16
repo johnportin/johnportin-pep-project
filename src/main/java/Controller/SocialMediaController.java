@@ -138,8 +138,16 @@ public class SocialMediaController {
         
     }
 
-    private void getAllMessagesForUserByIdHandler(Context ctx) {
-        String id = ctx.pathParam("account_id");
-        ctx.json("Retrieving all messages for account_id=" + id);
+    private void getAllMessagesForUserByIdHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        int id = Integer.valueOf(ctx.pathParam("account_id"));
+        ctx.status(200);
+        List<Message> messages = messageService.getAllMessagesByUserID(id);
+        if (messages != null && messages.size() > 0) {
+            ctx.json(om.writeValueAsString(messages));
+        } else {
+            ctx.json("[]");
+        }
+        
     }
 }

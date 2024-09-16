@@ -55,5 +55,13 @@ public class MessageService {
             return messageDAO.updateMessageByID(id, newMessage);
         }
     }
+
+    public List<Message> getAllMessagesByUserID(int id) {
+        Account a = accountDAO.getAccountByID(id);
+        if (a != null) {
+            return messageDAO.getAllMessagesByUserID(id);
+        }
+        return null;
+    }
     
 }
